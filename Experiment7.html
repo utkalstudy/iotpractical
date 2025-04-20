@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Experiment-7: Interfacing Bluetooth Module (HC-05) – Display Received Data on LCD</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #d32f2f;
+      margin-bottom: 20px;
+    }
+    h2 {
+      color: #303f9f;
+      margin-top: 30px;
+    }
+    ul, ol {
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    .code-container {
+      position: relative;
+      margin-top: 20px;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #00bcd4;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+    .copy-btn:hover {
+      background: #008c9e;
+    }
+    .home-btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #1976d2;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: 0.3s ease;
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+      margin-top: 40px;
+    }
+    .home-btn:hover {
+      background: #0d47a1;
+      transform: scale(1.05);
+    }
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Experiment-7</h1>
+
+    <h2>Aim of the Experiment:</h2>
+    <p>Interfacing Bluetooth Module (HC-05) – Receiving data from mobile phone on Arduino and display on LCD</p>
+
+    <h2>Hardware Required:</h2>
+    <ul>
+      <li>Arduino Uno – 1</li>
+      <li>HC-05 Bluetooth Module – 1</li>
+      <li>16x2 LCD Display – 1</li>
+      <li>10kΩ Potentiometer – 1</li>
+      <li>Jumper Wires – As needed</li>
+      <li>Breadboard – 1</li>
+      <li>USB Cable for Arduino – 1</li>
+      <li>Mobile Phone with Bluetooth Terminal App</li>
+    </ul>
+
+    <h2>Software Required:</h2>
+    <ul>
+      <li>Arduino IDE</li>
+      <li>LiquidCrystal Library</li>
+    </ul>
+
+    <h2>Procedure:</h2>
+    <ol>
+      <li><strong>Connect the LCD:</strong><br>
+        - RS → pin 12, EN → pin 11<br>
+        - D4 → pin 5, D5 → pin 4, D6 → pin 3, D7 → pin 2<br>
+        - Potentiometer middle pin to V0 (contrast), sides to 5V and GND
+      </li>
+      <li><strong>Connect the HC-05 Bluetooth Module:</strong><br>
+        - VCC → 5V, GND → GND<br>
+        - TX → RX of Arduino (pin 0), RX → TX of Arduino (pin 1)<br>
+        - (Use voltage divider for RX if needed)
+      </li>
+      <li><strong>Upload the code:</strong><br>
+        - Disconnect Bluetooth while uploading code<br>
+        - Reconnect after upload
+      </li>
+      <li><strong>Open Bluetooth Terminal App:</strong><br>
+        - Pair with HC-05 using default PIN (1234 or 0000)<br>
+        - Send any text via terminal
+      </li>
+      <li><strong>Observe Output:</strong><br>
+        - LCD will display the received text from mobile
+      </li>
+    </ol>
+
+    <h2>Code:</h2>
+    <div class="code-container">
+      <button class="copy-btn" onclick="copyCode()">📋 Copy</button>
+      <pre id="code">
+#include &lt;LiquidCrystal.h&gt;
+
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+String incomingData = "";
+
+void setup() {
+  lcd.begin(16, 2);
+  lcd.print("Waiting for Data");
+  Serial.begin(9600); // HC-05 default baud rate
+}
+
+void loop() {
+  if (Serial.available()) {
+    char received = Serial.read();
+    if (received == '\n') {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Received:");
+      lcd.setCursor(0, 1);
+      lcd.print(incomingData);
+      incomingData = "";
+    } else {
+      incomingData += received;
+    }
+  }
+}
+      </pre>
+    </div>
+
+    <h2>Output</h2>
+    <ul>
+      <li>Data sent from the mobile via Bluetooth appears on the LCD.</li>
+      <li>Example: Sending "Hello" shows "Received: Hello" on LCD.</li>
+    </ul>
+
+    <div class="center">
+      <a href="iot.html" class="home-btn">🏠 Home</a>
+    </div>
+  </div>
+
+  <script>
+    function copyCode() {
+      const codeText = document.getElementById("code").innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        alert("✅ Code copied to clipboard!");
+      }).catch(() => {
+        alert("❌ Failed to copy code.");
+      });
+    }
+  </script>
+
+</body>
+</html>

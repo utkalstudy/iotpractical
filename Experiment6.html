@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Experiment-6: Interfacing Air Quality Sensor (MQ135) – Display Data on LCD and Control LED</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #d32f2f;
+      margin-bottom: 20px;
+    }
+    h2 {
+      color: #303f9f;
+      margin-top: 30px;
+    }
+    ul, ol {
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    .code-container {
+      position: relative;
+      margin-top: 20px;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #00bcd4;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+    .copy-btn:hover {
+      background: #008c9e;
+    }
+    .home-btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #1976d2;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: 0.3s ease;
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+      margin-top: 40px;
+    }
+    .home-btn:hover {
+      background: #0d47a1;
+      transform: scale(1.05);
+    }
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Experiment-6</h1>
+
+    <h2>Aim of the Experiment:</h2>
+    <p>Interfacing Air Quality Sensor (e.g. MQ135) – Display data on LCD and switch on LED when pollution exceeds threshold</p>
+
+    <h2>Hardware Required:</h2>
+    <ul>
+      <li>Arduino Uno – 1</li>
+      <li>MQ135 Gas Sensor – 1</li>
+      <li>16x2 LCD Display – 1</li>
+      <li>10kΩ Potentiometer – 1</li>
+      <li>LED – 1</li>
+      <li>220Ω Resistor – 1</li>
+      <li>Breadboard – 1</li>
+      <li>Jumper Wires – As needed</li>
+      <li>USB Cable for Arduino – 1</li>
+    </ul>
+
+    <h2>Software Required:</h2>
+    <ul>
+      <li>Arduino IDE</li>
+      <li>LiquidCrystal Library</li>
+    </ul>
+
+    <h2>Procedure:</h2>
+    <ol>
+      <li><strong>Connect the MQ135 sensor:</strong><br>
+        - VCC to 5V, GND to GND<br>
+        - Analog OUT to A0
+      </li>
+      <li><strong>Connect the LCD:</strong><br>
+        - RS → pin 12, EN → pin 11<br>
+        - D4 → pin 5, D5 → pin 4, D6 → pin 3, D7 → pin 2<br>
+        - Potentiometer middle pin to V0 (contrast), sides to 5V and GND
+      </li>
+      <li><strong>Connect the LED:</strong><br>
+        - Positive leg (anode) of LED to pin 8 via 220Ω resistor<br>
+        - Negative leg (cathode) to GND
+      </li>
+      <li><strong>Upload the code:</strong><br>
+        - Use the code below to read gas levels, display on LCD and light LED if threshold is crossed
+      </li>
+      <li><strong>Observe Output:</strong><br>
+        - LCD shows analog air quality value<br>
+        - LED turns ON if value is above specified threshold
+      </li>
+    </ol>
+
+    <h2>Code:</h2>
+    <div class="code-container">
+      <button class="copy-btn" onclick="copyCode()">📋 Copy</button>
+      <pre id="code">
+#include &lt;LiquidCrystal.h&gt;
+
+// LCD pin connections (RS, E, D4, D5, D6, D7)
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+const int mq135Pin = A0;  // MQ135 analog pin
+const int ledPin = 8;     // LED connected to pin 8
+int airQuality = 0;
+int threshold = 400;      // Threshold value for pollution level
+
+void setup() {
+  lcd.begin(16, 2);
+  pinMode(ledPin, OUTPUT);
+  lcd.print("Air Quality Init");
+  delay(2000);
+  lcd.clear();
+}
+
+void loop() {
+  airQuality = analogRead(mq135Pin);
+
+  lcd.setCursor(0, 0);
+  lcd.print("Air Quality:");
+  lcd.setCursor(0, 1);
+  lcd.print("Value: ");
+  lcd.print(airQuality);
+  lcd.print("   ");
+
+  if (airQuality > threshold) {
+    digitalWrite(ledPin, HIGH); // High pollution - turn ON LED
+  } else {
+    digitalWrite(ledPin, LOW);  // Normal - turn OFF LED
+  }
+
+  delay(2000);
+}
+      </pre>
+    </div>
+
+    <h2>Output</h2>
+    <ul>
+      <li>LCD displays air quality values.</li>
+      <li>LED turns ON when air quality value exceeds 400.</li>
+    </ul>
+
+    <div class="center">
+      <a href="iot.html" class="home-btn">🏠 Home</a>
+    </div>
+  </div>
+
+  <script>
+    function copyCode() {
+      const codeText = document.getElementById("code").innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        alert("✅ Code copied to clipboard!");
+      }).catch(() => {
+        alert("❌ Failed to copy code.");
+      });
+    }
+  </script>
+
+</body>
+</html>

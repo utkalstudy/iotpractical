@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Experiment-4: Interfacing Temperature Sensor (DHT11) and/or Humidity Sensor (DHT11)</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #d32f2f;
+      margin-bottom: 20px;
+    }
+    h2 {
+      color: #303f9f;
+      margin-top: 30px;
+    }
+    ul, ol {
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    .code-container {
+      position: relative;
+      margin-top: 20px;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #00bcd4;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+    .copy-btn:hover {
+      background: #008c9e;
+    }
+    .home-btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #1976d2;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: 0.3s ease;
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+      margin-top: 40px;
+    }
+    .home-btn:hover {
+      background: #0d47a1;
+      transform: scale(1.05);
+    }
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Experiment-4</h1>
+
+    <h2>Aim of the Experiment:</h2>
+    <p>Interfacing Temperature Sensor (DHT11) and/or Humidity Sensor (DHT11)</p>
+
+    <h2>Hardware Required:</h2>
+    <ul>
+      <li>Arduino Uno – 1</li>
+      <li>DHT11 Sensor – 1</li>
+      <li>10kΩ Resistor – 1 (optional)</li>
+      <li>Breadboard – 1</li>
+      <li>Jumper Wires – As needed</li>
+      <li>USB Cable for Arduino – 1</li>
+    </ul>
+
+    <h2>Software Required:</h2>
+    <ul>
+      <li>Arduino IDE</li>
+      <li>DHT sensor library (DHT.h, Adafruit Unified Sensor)</li>
+    </ul>
+
+    <h2>Procedure:</h2>
+    <ol>
+      <li><strong>Install the DHT library:</strong><br>
+        - In Arduino IDE, go to <code>Sketch > Include Library > Manage Libraries</code><br>
+        - Search and install "DHT sensor library" by Adafruit and "Adafruit Unified Sensor"
+      </li>
+      <li><strong>Make the connections:</strong><br>
+        - VCC of DHT11 to 5V on Arduino<br>
+        - GND of DHT11 to GND on Arduino<br>
+        - DATA pin of DHT11 to digital pin 2 on Arduino<br>
+        - (Optional) Connect a 10kΩ resistor between VCC and DATA pin
+      </li>
+      <li><strong>Upload the code:</strong><br>
+        - Use the below code in Arduino IDE and upload it to the board
+      </li>
+      <li><strong>Open Serial Monitor:</strong><br>
+        - Set baud rate to <code>9600</code> to view temperature and humidity readings
+      </li>
+    </ol>
+
+    <h2>Code:</h2>
+    <div class="code-container">
+      <button class="copy-btn" onclick="copyCode()">📋 Copy</button>
+      <pre id="code">
+#include &lt;DHT.h&gt;
+
+#define DHTPIN 2     // Digital pin connected to the DHT sensor
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+}
+
+void loop() {
+  float humidity = dht.readHumidity();
+  float temperature = dht.readTemperature(); // Celsius
+
+  if (isnan(humidity) || isnan(temperature)) {
+    Serial.println("Failed to read from DHT sensor!");
+    return;
+  }
+
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.print(" %\t");
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" °C");
+
+  delay(2000); // Wait 2 seconds between readings
+}
+      </pre>
+    </div>
+
+    <h2>Output</h2>
+    <ul>
+      <li>Displays temperature and humidity values in Serial Monitor every 2 seconds</li>
+    </ul>
+
+    <div class="center">
+      <a href="iot.html" class="home-btn">🏠 Home</a>
+    </div>
+  </div>
+
+  <script>
+    function copyCode() {
+      const codeText = document.getElementById("code").innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        alert("✅ Code copied to clipboard!");
+      }).catch(() => {
+        alert("❌ Failed to copy code.");
+      });
+    }
+  </script>
+
+</body>
+</html>

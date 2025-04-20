@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Experiment-8: Interfacing Relay Module – Bluetooth Based Home Automation</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #d32f2f;
+      margin-bottom: 20px;
+    }
+    h2 {
+      color: #303f9f;
+      margin-top: 30px;
+    }
+    ul, ol {
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    .code-container {
+      position: relative;
+      margin-top: 20px;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #00bcd4;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+    .copy-btn:hover {
+      background: #008c9e;
+    }
+    .home-btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #1976d2;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: 0.3s ease;
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+      margin-top: 40px;
+    }
+    .home-btn:hover {
+      background: #0d47a1;
+      transform: scale(1.05);
+    }
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Experiment-8</h1>
+
+    <h2>Aim of the Experiment:</h2>
+    <p>Interfacing Relay Module to demonstrate Bluetooth based home automation application</p>
+
+    <h2>Hardware Required:</h2>
+    <ul>
+      <li>Arduino Uno – 1</li>
+      <li>HC-05 Bluetooth Module – 1</li>
+      <li>Relay Module – 1</li>
+      <li>AC Bulb or any home appliance (optional)</li>
+      <li>Jumper Wires – As needed</li>
+      <li>Breadboard – 1</li>
+      <li>USB Cable for Arduino – 1</li>
+      <li>Mobile Phone with Bluetooth Terminal App</li>
+    </ul>
+
+    <h2>Software Required:</h2>
+    <ul>
+      <li>Arduino IDE</li>
+      <li>Bluetooth Terminal App</li>
+    </ul>
+
+    <h2>Procedure:</h2>
+    <ol>
+      <li><strong>Connect the HC-05 Module:</strong><br>
+        - VCC → 5V, GND → GND<br>
+        - TX → RX of Arduino (pin 0), RX → TX of Arduino (pin 1)<br>
+        - (Use voltage divider for RX if needed)
+      </li>
+      <li><strong>Connect the Relay Module:</strong><br>
+        - IN pin of relay to pin 8 on Arduino<br>
+        - VCC and GND to 5V and GND respectively
+      </li>
+      <li><strong>Upload the code:</strong><br>
+        - Disconnect HC-05 while uploading code<br>
+        - Reconnect after upload
+      </li>
+      <li><strong>Pair and Control via Bluetooth:</strong><br>
+        - Pair phone with HC-05 (PIN: 1234/0000)<br>
+        - Open Bluetooth Terminal and send characters:<br>
+        - <strong>Send '1'</strong> → Relay ON<br>
+        - <strong>Send '0'</strong> → Relay OFF
+      </li>
+      <li><strong>Observe Output:</strong><br>
+        - Relay switches ON/OFF depending on the Bluetooth command
+      </li>
+    </ol>
+
+    <h2>Code:</h2>
+    <div class="code-container">
+      <button class="copy-btn" onclick="copyCode()">📋 Copy</button>
+      <pre id="code">
+int relayPin = 8;
+char data = 0;
+
+void setup() {
+  pinMode(relayPin, OUTPUT);
+  digitalWrite(relayPin, LOW);
+  Serial.begin(9600); // Bluetooth HC-05 default baud rate
+}
+
+void loop() {
+  if (Serial.available()) {
+    data = Serial.read();
+    
+    if (data == '1') {
+      digitalWrite(relayPin, HIGH); // Turn ON relay
+    } else if (data == '0') {
+      digitalWrite(relayPin, LOW);  // Turn OFF relay
+    }
+  }
+}
+      </pre>
+    </div>
+
+    <h2>Output</h2>
+    <ul>
+      <li>Relay turns ON when '1' is sent from mobile via Bluetooth.</li>
+      <li>Relay turns OFF when '0' is sent.</li>
+      <li>This demonstrates basic Bluetooth-based home automation.</li>
+    </ul>
+
+    <div class="center">
+      <a href="iot.html" class="home-btn">🏠 Home</a>
+    </div>
+  </div>
+
+  <script>
+    function copyCode() {
+      const codeText = document.getElementById("code").innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        alert("✅ Code copied to clipboard!");
+      }).catch(() => {
+        alert("❌ Failed to copy code.");
+      });
+    }
+  </script>
+
+</body>
+</html>
